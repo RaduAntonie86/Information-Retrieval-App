@@ -4,8 +4,8 @@ using WordFrequency;
 
 internal class DocumentProcessor
 {
-    static SortedDictionary<int, ushort> rarVector;
-    static List<String> stopwords;
+    static SortedDictionary<int, ushort> rarVector = new();
+    static List<String> stopwords = new();
     private static int currentDoc = 0;
     public static void convertDocumentToRar(String folderPath, ref Dictionary<String, SortedDictionary<int, ushort>> documents, ref List<String> globalArray, ref List<List<String>> topics, String stopWordsPath = "")
     {
@@ -43,11 +43,12 @@ internal class DocumentProcessor
     {
         int index = -1;
         PorterStemmer porterStemmer = new();
+        word = word.ToLower();
 
-        porterStemmer.StemWord(word);
+        word = porterStemmer.StemWord(word);
 
         word = extraCleaningSteps(word);
-        if (isStopWord(word) || word == "")
+        if (isStopWord(word) || word == "" || int.TryParse(word, out _))
             return;
 
         if (!globalArray.Contains(word))
@@ -70,7 +71,7 @@ internal class DocumentProcessor
     static private bool isStopWord(String word)
     {
         foreach (String stopword in stopwords)
-            if (word.ToLower().Equals(stopword))
+            if (word.Equals(stopword))
                 return true;
         return false;
     }
